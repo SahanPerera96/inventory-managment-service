@@ -379,7 +379,19 @@ public class StockServiceImpl implements StockService {
 		
 		Stock lastOpenStock = this.fetchMasterLastEntry(date);
 		if(lastOpenStock == null) {
-			throw new MessageBodyConstraintViolationException("Stock log entry not available.");
+			List<TransactionLog> transactionLogsIssue = new ArrayList<TransactionLog>();
+			List<TransactionLog> transactionLogsRecived = new ArrayList<TransactionLog>();
+			Stock stock  = new Stock();
+			StockMovementResponse stockMovementResponse = new StockMovementResponse();
+			stockMovementResponse.setResponse("failed");
+			stockMovementResponse.setStock(stock);
+			stockMovementResponse.setTransactionLogsIssue(transactionLogsIssue);
+			stockMovementResponse.setTransactionLogsRecived(transactionLogsRecived);
+			
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(stockMovementResponse);
+//			throw new MessageBodyConstraintViolationException("Stock log entry not available.");
+			
+			
 		}
 		ZonedDateTime lastOpenStockDate = lastOpenStock.getDate();
 	
@@ -442,7 +454,7 @@ public class StockServiceImpl implements StockService {
 				case "issue":
 					transactionLogsIssue.add(newFilteredAfterItemSort.get(j));
 					break;
-				case "receive":
+				case "recieve":
 					transactionLogsRecived.add(newFilteredAfterItemSort.get(j));
 					break;
 
@@ -474,7 +486,7 @@ public class StockServiceImpl implements StockService {
 			}
 			
 			StockMovementResponse stockMovementResponse = new StockMovementResponse();
-			stockMovementResponse.setResponse("Sucess");
+			stockMovementResponse.setResponse("success");
 			stockMovementResponse.setStock(stock);
 			stockMovementResponse.setTransactionLogsIssue(transactionLogsIssue);
 			stockMovementResponse.setTransactionLogsRecived(transactionLogsRecived);
@@ -485,12 +497,22 @@ public class StockServiceImpl implements StockService {
 		} catch (ParseException ex) {
 			ex.printStackTrace();
 		}
-
-		Response response = new Response();
-		response.setResponse("Failed");
-		response.setMessage("Failed to withdraw from database.");
 		
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		List<TransactionLog> transactionLogsIssue = new ArrayList<TransactionLog>();
+		List<TransactionLog> transactionLogsRecived = new ArrayList<TransactionLog>();
+		Stock stock  = new Stock();
+		StockMovementResponse stockMovementResponse = new StockMovementResponse();
+		stockMovementResponse.setResponse("failed");
+		stockMovementResponse.setStock(stock);
+		stockMovementResponse.setTransactionLogsIssue(transactionLogsIssue);
+		stockMovementResponse.setTransactionLogsRecived(transactionLogsRecived);
+		
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(stockMovementResponse);
+//		Response response = new Response();
+//		response.setResponse("Failed");
+//		response.setMessage("Failed to withdraw from database.");
+//		
+//		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 	}
 	
 	class Response {
