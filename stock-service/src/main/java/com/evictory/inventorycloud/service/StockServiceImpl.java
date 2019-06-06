@@ -373,11 +373,14 @@ public class StockServiceImpl implements StockService {
 	}
 
 	@Override
-	public ResponseEntity<?> fetchStockMovementReport(String date, Integer itemId, Integer uomId, Integer brandId) {
+	public ResponseEntity<?> fetchStockMovementReport(Integer itemId, Integer uomId, Integer brandId) {
+		
 		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss");
 		final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
 		
-		Stock lastOpenStock = this.fetchMasterLastEntry(date);
+		String tim[] = ZonedDateTime.now(ZoneId.of("UTC-4")).toString().split("T");
+		System.out.println("THis is the time from todat "+ tim[0]);
+		Stock lastOpenStock = this.fetchMasterLastEntry( tim[0]);
 		if(lastOpenStock == null) {
 			List<TransactionLog> transactionLogsIssue = new ArrayList<TransactionLog>();
 			List<TransactionLog> transactionLogsRecived = new ArrayList<TransactionLog>();
